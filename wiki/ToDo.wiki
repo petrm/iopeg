@@ -6,6 +6,7 @@
   # Find/create an Io TDD framework
   # Create a basic parser
   # Bootstrap an IoPEG parser that generates Io code for parsing IoPEG grammars.
+  # Write a grammar for Io.
 
 === Features to implement ===
   * Syntactically validate a string without the overhead of creating a tree of nodes.
@@ -33,3 +34,4 @@
     * Mark a rule, sequence, or group as skipping or aggregating a syntax node
     * Associate rules, sequences, or groups with inline Io code to add to the syntax node
     * Associate rules, sequences, or groups with objects defined in another file, to merge into the syntax node
+    * Built in convenience terminals, like `EOF`, `CRLF`, `NEWLINE`, `NEWLINE_OR_EOF`... 

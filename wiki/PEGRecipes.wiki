@@ -1,0 +1,7 @@
+#summary Helpful snippets and patterns for learning and writing grammars.
+#labels PEG,Help,Pattern,Grammar,Recipe
+
+*EOF*
+{{{
+   EOF <- !.
+}}}

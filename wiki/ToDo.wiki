@@ -3,7 +3,7 @@
 
 == Checklist ==
   # Learn Io
-  # Find/create an Io TDD framework
+  # Find/create an Io TDD framework - [http://www.iolanguage.com/scm/git/checkout/Io/docs/IoCoreReference.html#UnitTest done]
   # Create a basic parser
   # Bootstrap an IoPEG parser that generates Io code for parsing IoPEG grammars.
   # Write a grammar for Io.

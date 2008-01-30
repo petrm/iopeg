@@ -1,0 +1,7 @@
+#summary Helpful resources for learning about PEG.
+#labels Help,PEG
+
+  * [http://en.wikipedia.org/wiki/Parsing_expression_grammar PEG on Wikipedia]
+  * [http://pdos.csail.mit.edu/~baford/packrat/Bryan's list of research papers and implementations]
+  * [http://pdos.csail.mit.edu/~baford/packrat/popl04/peg-popl04.pdf The original PEG paper] (PDF)
+  * [http://en.wikipedia.org/wiki/Parsing_expression_grammar Bryan's PEG slides] (PDF)

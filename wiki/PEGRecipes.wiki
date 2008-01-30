@@ -1,7 +1,13 @@
 #summary Helpful snippets and patterns for learning and writing grammars.
-#labels PEG,Help,Pattern,Grammar,Recipe
+#labels PEG,Help,Pattern,Grammar,Recipe,Featured
 
 *EOF*
 {{{
    EOF <- !.
+}}}
+
+*Space delimited words*
+with an ending delimiter that may include some whitespace
+{{{
+  paragraph <- ( !(word the_end) word space+ )* word the_end
 }}}

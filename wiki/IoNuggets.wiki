@@ -1,0 +1,22 @@
+#summary Strangities, niceties, etc from Io spelunking.
+#labels IoLanguage
+
+= Io Nuggets! =
+{{{
+foo := method( call activated call )
+}}}
+// Boom. I was trying for a strange infinite loop, and found a strange crash.
+----
+{{{
+foo := method( call message protos first slotNames )
+}}}
+// Hmmmmmmm. This is cool. Some "unnamed" proto of Call objects has cool stuffs.
+----
+{{{
+Directory with( launchPath ) items foreach(i,v,v name println)
+}}}
+// I'm a bit wary of 'stringing' so many calls together. But maybe that fear is invalid in Io.
+----
+This made me laugh, and smile:
+"In case you were wondering, method is a method on Object that creates anonymous methods."
+----

@@ -20,3 +20,20 @@ Directory with( launchPath ) items foreach(i,v,v name println)
 This made me laugh, and smile:
 "In case you were wondering, method is a method on Object that creates anonymous methods."
 ----
+
+Random things that can be done with the regex library:
+{{{
+Io> s := "one!two!!three!!!"
+==> one!two!!three!!!
+Io> s splitAtRegex("!+")
+==> list("one", "two", "three", "")
+Io> s := "37signals"
+==> 37signals
+Io> s hasMatchOfRegex("signals")
+==> true
+Io> "one two three" allMatchesOfRegex("\\w+") map(asString println)
+one
+two
+three
+==> list("one", "two", "three")
+}}}

@@ -3,6 +3,24 @@
 
 = Io Nuggets! =
 {{{
+foo := method( a1, "all done" println )
+bar := method( "hello" println )
+bad := method( "OH NOES!" println )
+foo( bar, bad bad bad )
+#=> hello
+#=> all done
+}}}
+Any arguments not explicitly listed at method define time aren't executed during method dispatch. However, the full syntax tree of what you wrote for that parameter is totally intact. You can choose, inside the method, to eval the methods in whatever scope you want.
+
+This is how select and map work in their shorthand forms, evaling the supplied code in another scope:
+{{{
+self foreach( v,
+  doInContext(getSlot("v"), call sender)
+  ...
+)
+}}}
+----
+{{{
 foo := method( call activated call )
 }}}
 // Boom. I was trying for a strange infinite loop, and found a strange crash.

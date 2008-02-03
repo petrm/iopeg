@@ -2,6 +2,7 @@
 #labels IoLanguage
 
 = Io Nuggets! =
+**Lazy Param Evaluation**
 {{{
 foo := method( a1, "all done" println )
 bar := method( "hello" println )
@@ -17,6 +18,55 @@ This is how select and map work in their shorthand forms, evaling the supplied c
 self foreach( v,
   doInContext(getSlot("v"), call sender)
   ...
+)
+}}}
+----
+**Benchmarking** for maximum premature optimization
+{{{
+time := method( iterations,
+  list( "WARMUP", "RACETIME" ) foreach( title,
+    title println
+    args := call message arguments slice( 1 )
+    longest := args map( asString size ) max
+    args foreach( arg,
+      start := Date clone now
+      iterations repeat(
+        arg doInContext
+      )
+      end := Date clone now
+      writeln(
+        arg asString alignLeft( longest, " " ),
+        ( end - start ) seconds asString( 8, 3 )
+      )
+    )
+  )
+)
+
+time( 5000, b methods1, b methods2 )
+#=> WARMUP
+#=> b methods    4.455
+#=> b methods2   5.252
+#=> RACETIME
+#=> b methods    4.458
+#=> b methods2   5.256
+}}}
+Coolness:
+  * It uses the actual source code of what you wrote as the labels
+  * As seen above, there's no lambdas or string eval, just write as many as you want.
+----
+**Find a list of methods available on an object**
+{{{
+Object ownMethods := method(
+  self slotNames select( name,
+    # Much faster than isKindOf( Block )
+    self getSlot(name) type == "Block"
+  )
+)
+
+Object methods := method(
+  list( self ownMethods ) appendSeq( self ancestors ) reduce( meths, ancestor,
+    meths appendSeq( ancestor ownMethods )
+  ) unique
 )
 }}}
 ----

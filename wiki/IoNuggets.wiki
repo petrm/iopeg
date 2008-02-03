@@ -2,7 +2,7 @@
 #labels IoLanguage
 
 = Io Nuggets! =
-**Lazy Param Evaluation**
+*Lazy Param Evaluation*
 {{{
 foo := method( a1, "all done" println )
 bar := method( "hello" println )
@@ -21,7 +21,7 @@ self foreach( v,
 )
 }}}
 ----
-**Benchmarking** for maximum premature optimization
+*Benchmarking* for maximum premature optimization
 {{{
 time := method( iterations,
   list( "WARMUP", "RACETIME" ) foreach( title,
@@ -54,7 +54,7 @@ Coolness:
   * It uses the actual source code of what you wrote as the labels
   * As seen above, there's no lambdas or string eval, just write as many as you want.
 ----
-**Find a list of methods available on an object**
+*Find a list of methods available on an object*
 {{{
 Object ownMethods := method(
   self slotNames select( name,

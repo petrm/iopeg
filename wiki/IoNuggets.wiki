@@ -2,7 +2,7 @@
 #labels IoLanguage
 
 = Io Nuggets! =
-*Lazy Param Evaluation*
+*Dynamic Parameter Evaluation*
 {{{
 foo := method( a1, "all done" println )
 bar := method( "hello" println )

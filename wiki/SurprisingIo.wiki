@@ -34,3 +34,7 @@ _Steve Dekorte says that there's an optimization that hard-looks in Locals inste
   * There is `Sequence endsWithSeq`, where is `startsWithSeq`?
 
   * In Ruby, `Array#empty?` tests if it's empty. A few times I've done `myList empty` and been weirded out when it never returns `false`.
+
+  * `foo or false` results in `true`, not `foo`. Makes it harder to make guard statements than Ruby/JS/Lua.
+
+  * `foo := Object clone; foo true := foo; foo true #=> true` Why isn't this 'foo'?

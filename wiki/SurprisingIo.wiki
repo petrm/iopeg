@@ -21,7 +21,7 @@ t2 := Date now
   * The 'magic' `updateSlot` that operates on `self` and the 'magic' `forward` that forwards messages to `self` conflicts mentally with no 'magic' `setSlot`. It's hard to know when you must use `self` in a method, and when it's OK not to. (Especially with `do(...)` not requiring it.)
 
 {{{
-thisLocalContext slotNames contains( "forward" ) == false`
+thisLocalContext slotNames contains( "forward" ) == false
 thisLocalContext protos isEmpty == true
 # ... so how does it forward messages to self?
 }}}

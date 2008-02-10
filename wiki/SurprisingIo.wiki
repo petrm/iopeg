@@ -1,7 +1,7 @@
 #summary Notes about Io from a beginner
 #labels Io
 
-Here are some things about Io that surprised me as I came to learn it. As background, I have experience in JavaScript, Lua, and Ruby.
+Here are some things about Io that surprised me as I came to learn it. As background, I have experience in !JavaScript, Lua, and Ruby.
 
 {{{
 t1 := Date now

@@ -1,0 +1,40 @@
+#summary Notes about Io from a beginner
+#labels Io
+
+Here are some things about Io that surprised me as I came to learn it. As background, I have experience in JavaScript, Lua, and Ruby.
+----
+t1 := Date now
+t2 := Date now
+# oops; t1 just got mutated
+# must use Date clone now
+----
+Bad docs for Number asString
+---- 
+Number asString, first param oddly named
+----
+Where's sprintf? Any convenient way of formatting numbers as strings?
+----
+Why is Protos Addons not the same as Protos protos last?
+----
+The 'magic' updateSlot that operates on self and the 'magic' forward that forwards messages to self conflicts mentally with no 'magic' setSlot.
+----
+thisLocalContext slotNames contains( "forward" ) == false
+thisLocalContext protos isEmpty == true
+... so how does it forward messages to self?
+//Steve Dekorte says that there's an optimization that hard-looks in Locals instead of via protos.//  
+----
+Frustrating no-documentation methods. Not just no examples, but not even a summary description.
+----
+The word 'context' is confusing. Why not just 'object'?
+----
+There is Sequence endsWithSeq, where is startsWithSeq?
+----
+In Ruby, Array#empty? tests if it's empty. A few times I've done List empty and been weirded out when it never returns false.
+--
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages

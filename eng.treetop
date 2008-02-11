@@ -1,0 +1,17 @@
+grammar Eng
+  rule Sentence
+    CapitalizedWord ( Word / Space )* Punctuation
+  end
+  rule CapitalizedWord
+    [A-Z] Word?
+  end
+  rule Word
+    [A-Za-z]+
+  end
+  rule Space
+    ' '
+  end
+  rule Punctuation
+    '.' / '!' / '?'
+  end
+end

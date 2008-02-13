@@ -20,7 +20,8 @@ IoPEG Parser SyntaxNode := Object clone do(
   # Explicitly overridden by values on leaf nodes
   text   := method( children map( text ) join )
   offset := method( children first offset )
-  
+  size   := method( text size )
+    
   showTree := method( depth,
     if( depth not, depth = 0 )
     ("  " repeated(depth) .. asString) println

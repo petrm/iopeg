@@ -7,7 +7,6 @@ terminal_punctuation  <- '.' / '!' / '?'
 inline_punctuation    <- [,;:]
 */
 
-#TODO: Allow backtracking by passing offset around
 #TODO: then start memoizing that.
 
 IoPEG

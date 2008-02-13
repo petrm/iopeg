@@ -8,7 +8,7 @@ IoPEG Parser := Object clone do(
   parse := method( sourceString,
     # p(sourceString)
     self offset := 0
-    self string := sourceString
+    self sourceString := sourceString
     
     root := parseRootProduction
 
@@ -153,13 +153,19 @@ IoPEG Parser := Object clone do(
     )
   )
   
-  parse_Anything := method(
-    #TODO: consume a single character and return as a node if possible
+  parse_AnyChar := method(
+    if( offset < sourceString size,
+      leaf := SyntaxNode leaf( sourceString slice( offset, offset + 1 ), offset )
+      offset = offset + 1
+      leaf
+    ,
+      nil
+    )
   )
   
   # TODO: This may be really heavy
   currentString := method(
-    string splitAt( offset ) last
+    sourceString splitAt( offset ) last
   )
   
   addNode := method( possible )

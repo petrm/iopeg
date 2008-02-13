@@ -1,6 +1,8 @@
 #summary A prioritized list of things to work on.
 #labels Featured
 
+http://phrogz.net/tmp/IoPEG_PathToProfit.png
+
 == Checklist ==
   # Learn Io
   # Find/create an Io TDD framework - [http://www.iolanguage.com/scm/git/checkout/Io/docs/IoCoreReference.html#UnitTest done]

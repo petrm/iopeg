@@ -17,7 +17,7 @@ IoPEG Parser := Object clone do(
 
     if( offset != sourceString size,
       # TODO: preference to allow not consuming all text
-      ParseFailure raise( "Parsed, but did not consume '#{currentString}'" interpolate )
+      ParseFailure raise( "Parsed, but did not consume '#{sourceString}'" interpolate )
     )
     root
   )

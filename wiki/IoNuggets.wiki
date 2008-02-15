@@ -54,6 +54,21 @@ Coolness:
   * It uses the actual source code of what you wrote as the labels
   * As seen above, there's no lambdas or string eval, just write as many as you want.
 ----
+*|| as a guard*
+{{{
+OperatorTable addOperator("||", 13)
+Object || := method(
+  if ( self,
+    m := call message next ?next
+    if ( m, call message setNext( m ) )    
+    self
+  ,
+    call evalArgAt(0)
+  )
+)
+}}}
+_Acts like Ruby_
+----
 *Find a list of methods available on an object*
 {{{
 Object ownMethods := method(

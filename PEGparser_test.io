@@ -2,14 +2,7 @@ PEGParser
 
 TestPEGParser := UnitTest clone do(  
   test1_parsing := method(
-    assertParses(  )
-    assertParses( "Hello!" )
-    assertParses( "Hello there you sexy world!" )
-    assertParses( "Hello there, world!" )
-    assertParseFailure( "" )
-    assertParseFailure( "!" )
-    assertParseFailure( "hello world!" )
-    assertParseFailure( "Hello World! BORK" )   # not ending with punc, bad.
+    assertParses( File with( "PEG.peg" ) contents )
   )
   
   assertParses := method( str,
@@ -21,5 +14,3 @@ TestPEGParser := UnitTest clone do(
   )
 )
 TestPEGParser run
-
-PEGParser parse( File with( "PEG.peg" ) contents ) showTree

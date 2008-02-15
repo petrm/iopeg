@@ -4,129 +4,126 @@ IoPEG
 
 PEGParser := IoPEG Parser clone do(
   pGrammar := method(
-    parse_Sequence( pSpacing, oneOrMore(pDefinition), pEndOfFile )
+    seq( pSpacing, plus(pDefinition), pEndOfFile )
   )
   pDefinition := method(
-    parse_Sequence( pIdentifier, pLEFTARROW, pExpression )
+    seq( pIdentifier, pLEFTARROW, pExpression )
   )
   pExpression := method(
-    parse_Sequence( pSequence, zeroOrMore( pSLASH, pSequence ) )
+    seq( pSequence, star( seq( pSLASH, pSequence ) ) )
   )
   pSequence := method(
-    zeroOrMore( pPrefix )
+    star( pPrefix )
   )
   pPrefix := method(
-    parse_Sequence(
-      zeroOrOne( parse_OrderedChoice( pAND, pNOT ) ),
+    seq(
+      optional( choice( pAND, pNOT ) ),
       pSuffix
     )
   )
   pSuffix := method(
-    parse_Sequence(
+    seq(
       pPrimary,
-      zeroOrOne( parse_OrderedChoice( pQUESTION, pSTAR, pPLUS ) )
+      optional( choice( pQUESTION, pSTAR, pPLUS ) )
     )
   )
   pPrimary := method(
-    parse_OrderedChoice(
-      parse_Sequence( pIdentifier, forbid( pLEFTARROW ) ),
-      parse_Sequence( pOPEN, pExpression, pCLOSE ),
+    choice(
+      seq( pIdentifier, forbid( pLEFTARROW ) ),
+      seq( pOPEN, pExpression, pCLOSE ),
       pLiteral,
       pClass,
       pDOT
     )
   )
   pIdentifier := method(
-    parse_Sequence( pIdentStart, zeroOrMore(pIdentCont), pSpacing )
+    seq( pIdentStart, star(pIdentCont), pSpacing )
   )
   pIdentStart := method(
-    parse_Regexp( "[a-zA-Z_]" )
+    regex( "[a-zA-Z_]" )
   )
   pIdentCont := method(
-    parse_OrderedChoice( pIdentStart, parse_Regexp( "[0-9]" ) )
+    choice( pIdentStart, regex( "[0-9]" ) )
   )
+
   pLiteral := method(
-    parse_OrderedChoice(
-      parse_Sequence(
-        parse_Literal( "'" ),
-        zeroOrMore( parse_Sequence(
-          forbid( parse_Literal("'") ),
-          pChar
-        ) ),
-        parse_Literal( "'" ),
+    choice(
+      seq(
+        str( "'" ),
+        star( seq( forbid( str("'") ), pChar) ),
+        str( "'" ),
         pSpacing
       ),
-      parse_Sequence(
-        parse_Literal( "\"" ),
-        zeroOrMore( parse_Sequence(
-          forbid( parse_Literal("\"") ),
-          pChar
-        ) ),
-        parse_Literal( "\"" ),
+      seq(
+        str( "\"" ),
+        star( seq( forbid( str("\"") ), pChar ) ),
+        str( "\"" ),
         pSpacing
       )
     )
   )
   pClass := method(
-    parse_Sequence(
-      parse_Literal( "[" ),
-      zeroOrMore( parse_Sequence(
-        forbid( parse_Literal("]") ),
+    seq(
+      str( "[" ),
+      star( seq(
+        forbid( str("]") ),
         pRange
       ) ),
-      parse_Literal( "]" ),
+      str( "]" ),
       pSpacing
     )
   )
   pRange := method(
-    parse_OrderedChoice(
-      parse_Sequence( pChar, parse_Literal( "-" ), pChar ),
+    choice(
+      seq( pChar, str( "-" ), pChar ),
       pChar
     )  
   )
   pChar := method(
-    parse_OrderedChoice(
-      parse_Sequence( parse_Literal( "\\" ), parse_Regexp( "[nrt'\"\[\]\\]" ) ),
-      parse_Sequence( parse_Literal( "\\" ), parse_Regexp( "[0-2]" ), parse_Regexp( "[0-7]" ), parse_Regexp( "[0-7]" ) ),
-      parse_Sequence( parse_Literal( "\\" ), parse_Regexp( "[0-7]" ), zeroOrOne( parse_Regexp( "[0-7]" ) ) ),
-      parse_Sequence( forbid( parse_Literal( "\\" ) ), parse_AnyChar )
+    choice(
+      seq( str( "\\" ), regex( "[nrt'\"\\[\\]\\\\]" ) ),
+      seq( str( "\\" ), regex( "[0-2]" ), regex( "[0-7]" ), regex( "[0-7]" ) ),
+      seq( str( "\\" ), regex( "[0-7]" ), optional( regex( "[0-7]" ) ) ),
+      seq( forbid( str( "\\" ) ), any )
     )
   )
-  pLEFTARROW := method( parse_Sequence( parse_Literal( "<-" ), pSpacing ) )
-  pSLASH := method( parse_Sequence( parse_Literal( "/" ), pSpacing ) )
-  pAND := method( parse_Sequence( parse_Literal( "&" ), pSpacing ) )
-  pNOT := method( parse_Sequence( parse_Literal( "!" ), pSpacing ) )
-  pQUESTION := method( parse_Sequence( parse_Literal( "?" ), pSpacing ) )
-  pSTAR := method( parse_Sequence( parse_Literal( "*" ), pSpacing ) )
-  pPLUS := method( parse_Sequence( parse_Literal( "+" ), pSpacing ) )
-  pOPEN := method( parse_Sequence( parse_Literal( "(" ), pSpacing ) )
-  pCLOSE := method( parse_Sequence( parse_Literal( ")" ), pSpacing ) )
-  pDOT := method( parse_Sequence( parse_Literal( "." ), pSpacing ) )
+  pLEFTARROW := method( seq( str( "<-" ), pSpacing ) )
+  pSLASH     := method( seq( str( "/"  ), pSpacing ) )
+  pAND       := method( seq( str( "&"  ), pSpacing ) )
+  pNOT       := method( seq( str( "!"  ), pSpacing ) )
+  pQUESTION  := method( seq( str( "?"  ), pSpacing ) )
+  pSTAR      := method( seq( str( "*"  ), pSpacing ) )
+  pPLUS      := method( seq( str( "+"  ), pSpacing ) )
+  pOPEN      := method( seq( str( "("  ), pSpacing ) )
+  pCLOSE     := method( seq( str( ")"  ), pSpacing ) )
+  pDOT       := method( seq( str( "."  ), pSpacing ) )
   pSpacing := method(
-    zeroOrMore( parse_OrderedChoice( pSpace, pComment ) )    
+    star( choice( pSpace, pComment ) )
   )
   pComment := method(
-    parse_Sequence(
-      parse_Literal("#"),
-      zeroOrMore( parse_Sequence(forbid(pEndOfLine), parse_AnyChar) )
+    seq(
+      str("#"),
+      star(
+        seq( forbid(pEndOfLine), any )
+      )
       pEndOfLine
     )
   )
   pSpace := method(
-    parse_OrderedChoice(
-      parse_Literal(" "),
-      parse_Literal("\t"),
+    choice(
+      str(" "),
+      str("\t"),
       pEndOfLine
     )
   )
   pEndOfLine := method(
-    parse_OrderedChoice(
-      parse_Literal("\r\n"),
-      parse_Literal("\n"),
-      parse_Literal("\r")
+    choice(
+      str("\r\n"),
+      str("\n"),
+      str("\r")
     )
   )
-  pEndOfFile := method( forbid(parse_AnyChar) )
+  pEndOfFile := method( forbid(any) )
 
   parseRootProduction := getSlot( "pGrammar" )
 )

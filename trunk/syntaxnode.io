@@ -28,5 +28,5 @@ IoPEG Parser SyntaxNode := Object clone do(
     children foreach( showTree(depth+1) )
   )
   
-  asString := method( "<#{self type}_0x#{uniqueId asHex} '#{text}' #{children size} children>" interpolate )
+  asString := method( "<#{self type}_0x#{uniqueId asHex} '#{text asMutable escape}' #{children size} children>" interpolate )
 )

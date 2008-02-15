@@ -69,6 +69,20 @@ Object || := method(
 }}}
 _Acts like Ruby_
 ----
+*||=*
+{{{
+OperatorTable addAssignOperator( "||=", "updateSlotIfExist" )
+updateSlotIfExist := method( seq, val,
+  currentValue := call sender doMessage( seq asMessage )  
+  if( currentValue,
+    currentValue
+  ,
+    call sender updateSlot( seq, val )
+  )
+)
+}}}
+_Unlike Ruby, does not setSlot if it doesn't already exist_
+----
 *Find a list of methods available on an object*
 {{{
 Object ownMethods := method(

@@ -4,21 +4,42 @@ p := method(
   )
 )
 
-# Because `foo or bar` returns `true`
-firstNonNil := method(
-  call message arguments foreach( arg,
-    result := arg doInContext( call sender )
-    if( result, return result )
-  )
-  result
-)
-
 Call callStack := method(
   stack := list( self )
   while( stack last getSlot("sender") and stack last sender getSlot("call"),
     stack push( stack last sender call )
   )
   stack
+)
+
+OperatorTable addOperator("||", 13)
+Object || := method(
+  if ( self,
+    m := call message next ?next
+    if ( m, call message setNext( m ) )    
+    self
+  ,
+    call evalArgAt(0)
+  )
+)
+
+OperatorTable addAssignOperator( "||=", "updateSlotIfExist" )
+updateSlotIfExist := method( seq, val,
+  currentValue := call sender doMessage( seq asMessage )  
+  if( currentValue,
+    currentValue
+  ,
+    call sender updateSlot( seq, val )
+  )
+)
+
+mergeWith := method( obj2,
+  obj2 slotNames foreach( name,
+    val := obj2 getSlot( name )
+    writeln( "#{name} will become #{val} (was #{self getSlot(name)})" interpolate )
+    self setSlot( name, val )
+  )
+  self
 )
 
 if( true,

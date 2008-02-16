@@ -4,46 +4,37 @@ IoPEG
 
 PEGParser := IoPEG Parser clone do(
   pGrammar := method(
-    seq( pSpacing, plus(pDefinition), pEndOfFile )
-  )
-  pDefinition := method(
-    seq( pIdentifier, pLEFTARROW, pExpression )
-  )
-  pExpression := method(
-    seq( pSequence, star( seq( pSLASH, pSequence ) ) )
-  )
-  pSequence := method(
-    star( pPrefix )
-  )
-  pPrefix := method(
-    seq(
-      optional( choice( pAND, pNOT ) ),
-      pSuffix
+    seq( pSpacing, plus(pDefinition), pEndOfFile ) do(
+      name := "Grammar"
     )
   )
-  pSuffix := method(
-    seq(
-      pPrimary,
-      optional( choice( pQUESTION, pSTAR, pPLUS ) )
+  pDefinition := method(
+    seq( pIdentifier, pLEFTARROW, pExpression ) do(
+      name := "Definition"
+    )
+  )
+  pExpression := method(
+    seq( plus( pPrimary ), star( seq( pSLASH, plus( pPrimary ) ) ) ) do(
+      name := "Expression"
     )
   )
   pPrimary := method(
-    choice(
-      seq( pIdentifier, forbid( pLEFTARROW ) ),
-      seq( pOPEN, pExpression, pCLOSE ),
-      pLiteral,
-      pClass,
-      pDOT
+    seq(
+      optional( choice( pAND, pNOT ) ) do( name := "Prefix" ),
+      choice(
+        seq( pIdentifier, forbid( pLEFTARROW ) ),
+        seq( pOPEN, pExpression, pCLOSE ),
+        pLiteral,
+        pClass,
+        pDOT
+      ) do ( name := "Primary" ),
+      optional( choice( pQUESTION, pSTAR, pPLUS ) ) do( name := "Suffix" )
+    ) do (
+      name := "Sequence"
     )
   )
   pIdentifier := method(
-    seq( pIdentStart, star(pIdentCont), pSpacing )
-  )
-  pIdentStart := method(
-    regex( "[a-zA-Z_]" )
-  )
-  pIdentCont := method(
-    choice( pIdentStart, regex( "[0-9]" ) )
+    seq( regex( "[a-zA-Z_]\\w*" ), pSpacing ) ?collapse do( name := "Identifier" )
   )
 
   pLiteral := method(
@@ -60,6 +51,8 @@ PEGParser := IoPEG Parser clone do(
         str( "\"" ),
         pSpacing
       )
+    ) do (
+      name := "Literal"
     )
   )
   pClass := method(
@@ -71,23 +64,25 @@ PEGParser := IoPEG Parser clone do(
       ) ),
       str( "]" ),
       pSpacing
+    ) do (
+      name := "Class"
     )
   )
   pRange := method(
     choice(
       seq( pChar, str( "-" ), pChar ),
       pChar
-    )  
+    ) do (
+      name := "Range"
+    )
   )
   pChar := method(
-    choice(
-      seq( str( "\\" ), regex( "[nrt'\"\\[\\]\\\\]" ) ),
-      seq( str( "\\" ), regex( "[0-2]" ), regex( "[0-7]" ), regex( "[0-7]" ) ),
-      seq( str( "\\" ), regex( "[0-7]" ), optional( regex( "[0-7]" ) ) ),
+    choice(      
+      regex( "\\\\(?:[nrt'\"\\[\\]\\\\]|[0-2][0-7]{2}|[0-7]{1,2})" ),
       seq( forbid( str( "\\" ) ), any )
     )
   )
-  pLEFTARROW := method( seq( str( "<-" ), pSpacing ) )
+  pLEFTARROW := method( seq( str( "<-" ), pSpacing ) ?collapse do( name := "LeftArrow" ) )
   pSLASH     := method( seq( str( "/"  ), pSpacing ) )
   pAND       := method( seq( str( "&"  ), pSpacing ) )
   pNOT       := method( seq( str( "!"  ), pSpacing ) )
@@ -98,30 +93,19 @@ PEGParser := IoPEG Parser clone do(
   pCLOSE     := method( seq( str( ")"  ), pSpacing ) )
   pDOT       := method( seq( str( "."  ), pSpacing ) )
   pSpacing := method(
-    star( choice( pSpace, pComment ) )
+    star( choice( pSpace, pComment ) ) and true
   )
   pComment := method(
     seq(
-      str("#"),
-      star(
-        seq( forbid(pEndOfLine), any )
-      )
+      regex("#.+"),
       pEndOfLine
     )
   )
   pSpace := method(
-    choice(
-      str(" "),
-      str("\t"),
-      pEndOfLine
-    )
+    regex( "([ \\t]|\\r\\n|[\\n\\r])+" )
   )
   pEndOfLine := method(
-    choice(
-      str("\r\n"),
-      str("\n"),
-      str("\r")
-    )
+    regex( "\\r\\n|[\\n\\r]" )
   )
   pEndOfFile := method( forbid(any) )
 

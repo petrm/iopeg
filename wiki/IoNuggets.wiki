@@ -108,6 +108,7 @@ foo := method( call activated call )
 foo := method( call message protos first slotNames )
 }}}
 // Hmmmmmmm. This is cool. Some "unnamed" proto of Call objects has cool stuffs.
+// Oh wait, it's "unnamed" in its asString, but it is really just Message
 ----
 {{{
 Directory with( launchPath ) items foreach(i,v,v name println)

@@ -15,14 +15,15 @@ IoPEG Parser := Object clone do(
     if( DEBUG_ON, DEBUG methodStart )
     
     root := parseRootProduction
+    root source := sourceString
 
     # TODO: track parse failures as they occur; report here.
     if( root == nil,
-      writeln( "Stopped parsing at: '#{failString slice(0, 40) asMutable escape}'" interpolate )
-      writeln( "Current call stack:\n#{failStack}\n" interpolate )
-      writeln( "Parse tree so far:" )
-      rootroot showTree
-      ParseFailure raise
+      msg := "Failed to parse #{call message argAt(0)}\n" asMutable
+      msg += "Stopped parsing at: '#{failString slice(0, 40) asMutable escape}'"
+      msg += "Current call stack:\n#{failStack}\n"
+      msg += "Parse tree so far:\n#{rootroot asTree}"
+      ParseFailure raise( msg )
     )
 
     if( offset != sourceString size,
@@ -168,7 +169,7 @@ IoPEG Parser := Object clone do(
     matches := currentString matchesOfRegex( "^(?:#{regexString})" interpolate ) all
     if ( matches isNotEmpty,
       match := matches first string
-      result := SyntaxNode leaf( match, offset )
+      result := SyntaxNode leaf( offset, offset + match size )
       offset = offset + match size
     ,
       failedOn( call message )
@@ -181,7 +182,7 @@ IoPEG Parser := Object clone do(
   str := method( literal,
     # if( DEBUG_ON, DEBUG methodStart )
     if( currentString findSeq( literal ) == 0,
-      result := SyntaxNode leaf( literal, offset )
+      result := SyntaxNode leaf( offset, offset + literal size )
       offset = offset + literal size
     ,
       failedOn( call message )
@@ -194,7 +195,7 @@ IoPEG Parser := Object clone do(
   any := method(
     if( DEBUG_ON, DEBUG methodStart )
     if( offset < sourceString size,
-      result := SyntaxNode leaf( sourceString slice( offset, offset + 1 ), offset )
+      result := SyntaxNode leaf( offset, offset + 1 )
       offset = offset + 1
     ,
       failedOn( call message )

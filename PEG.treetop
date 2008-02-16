@@ -1,0 +1,100 @@
+grammar PEG
+  # Hierarchical syntax
+  rule Grammar
+    Spacing Definition+ EndOfFile
+  end
+  rule Definition
+    Identifier LEFTARROW Expression
+  end
+  rule Expression
+    Sequence (SLASH Sequence)*
+  end
+  rule Sequence
+    Prefix*
+  end
+  rule Prefix
+    (AND / NOT)? Suffix
+  end
+  rule Suffix
+    Primary (QUESTION / STAR / PLUS)?
+  end
+  rule Primary
+    Identifier !LEFTARROW / OPEN Expression CLOSE / Literal / Class / DOT
+  end
+
+  # Lexical syntax
+  rule Identifier
+    IdentStart IdentCont* Spacing
+  end
+  rule IdentStart
+    [a-zA-Z_]
+  end
+  rule IdentCont
+    IdentStart / [0-9]
+  end
+  rule Literal
+    ['] (!['] Char)* ['] Spacing
+    /
+    ["] (!["] Char)* ["] Spacing
+  end
+  rule Class
+    '[' (!']' Range)* ']' Spacing
+  end
+  rule Range
+    Char '-' Char / Char
+  end
+  rule Char
+    "\\" ('n' / 'r' / 't' / "'" / '"' / '[' / ']' / "\\" )
+    /
+    "\\" [0-2] [0-7] [0-7]
+    /
+    "\\" [0-7] [0-7]?
+    /
+    !"\\" .
+  end
+  rule LEFTARROW
+    '<-' Spacing
+  end
+  rule SLASH
+    '/' Spacing
+  end
+  rule AND
+    '&' Spacing
+  end
+  rule NOT
+    '!' Spacing
+  end
+  rule QUESTION
+    '?' Spacing
+  end
+  rule STAR
+    '*' Spacing
+  end
+  rule PLUS
+    '+' Spacing
+  end
+  rule OPEN
+    '(' Spacing
+  end
+  rule CLOSE
+    ')' Spacing
+  end
+  rule DOT
+    '.' Spacing
+  end
+  rule Spacing
+    (Space / Comment)*
+  end
+  rule Comment
+    '#' (!EndOfLine .)* EndOfLine
+  end
+  rule Space
+    ' ' / "\t" / EndOfLine
+  end
+  rule EndOfLine
+    "\r\n" / "\n" / "\r"
+  end
+  rule EndOfFile
+    !.
+  end
+end

@@ -33,7 +33,7 @@ SentenceParser := IoPEG Parser clone do(
     seq(
       regex( "[A-Z]" ),
       optional( parseWord )
-    )
+    ) collapse
   )
 
   parseWord := method(
@@ -41,7 +41,7 @@ SentenceParser := IoPEG Parser clone do(
   )
   
   parseSpace := method(
-    str( " " )
+    str( " " ) and true
   )
   
   parseTerminalPunctuation := method(

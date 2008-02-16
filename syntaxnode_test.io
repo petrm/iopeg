@@ -1,13 +1,12 @@
 IoPEG
 
-NodeTester := UnitTest clone do(  
+IoPEG SyntaxNodeTester := UnitTest clone do(  
   Node := IoPEG Parser SyntaxNode
-  test_tree := method(
-    h := Node leaf( "h", 0 )
-    assertEquals( h text, "h" )
-    assertEquals( h offset, 0 )
+  test1_tree := method(
+    h := Node leaf( 0, 1 )
+    assertEquals( h start, 0 )
     
-    i := Node leaf( "i", 1 )
+    i := Node leaf( 1, 2 )
     w1 := Node clone
     assertTrue( w1 children isEmpty )
     
@@ -17,20 +16,49 @@ NodeTester := UnitTest clone do(
     assertEquals( h parent, w1 )
     
     w1 addChild( i )
-    assertEquals( w1 text, "hi" )
     
     w2 := Node clone do(
-      addChild( leaf( "wor" ) )
+      addChild( leaf( 3, 6 ) )
     )
     
-    sentence := Node clone
+    sentence := Node clone do( source := "hi world" )
     sentence addChild( w1 )
-    sentence addChild( Node leaf( " " ) )
+    sentence addChild( Node leaf( 2, 3 ) )
     sentence addChild( w2 )
-    w2 addChild( Node leaf( "ld") )  
+    w2 addChild( Node leaf( 6,8 ) )  
     assertEquals( sentence text, "hi world")
+    assertEquals( h text, "h" )
+    assertEquals( w1 text, "hi" )
+    
+    tree := sentence asTree
+    lines := tree splitNoEmpties( "\r\n", "\n", "\r" )
+    assertEquals( lines size, 8 )
+  )
+  
+  test2_compact := method(
+    hi := Node leaf( 0, 2 )
+    there := Node leaf( 3, 8 )
+    world := Node leaf( 9, 14 )
+    sentence := Node clone do( source := "hi there world" )
+    p1 := Node clone
+    p2 := Node clone
+    p3 := Node clone
+    p4 := Node clone
+    sentence addChild( p1 )
+    p1 addChild( p2 )
+    p1 addChild( p3 )
+    p2 addChild( hi )
+    p2 addChild( there )
+    p3 addChild( p4 )
+    p4 addChild( world )
+    
+    sentence showTree
+    sentence compact
+    sentence showTree
+    tree := sentence asTree
+    lines := tree splitNoEmpties( "\r\n", "\n", "\r" )
+    assertEquals( lines size, 5 )
   )
 )
 
-NodeTester run
-"All done" println
+IoPEG SyntaxNodeTester run

@@ -38,3 +38,5 @@ _Steve Dekorte says that there's an optimization that hard-looks in Locals inste
   * `foo or false` results in `true`, not `foo`. Makes it harder to make guard statements than Ruby/JS/Lua.
 
   * `foo := Object clone; foo true := foo; foo true #=> true` Why isn't this 'foo'?
+
+  * `"foo\nbar" escape #=> Exception: 'escape' cannot be called on an immutable Sequence` Why would I expect escape to mutate the sequence instead of returning a copy? Why shouldn't I expect `slice()` to mutate the sequence? How do I know which Sequence methods will throw an exception on an Immutable Sequence?

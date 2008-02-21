@@ -6,10 +6,10 @@ http://phrogz.net/tmp/IoPEG_PathToProfit.png
 == Checklist =
   # Design a PEG grammar describing a simple subject
   # Create one or more examples that use that grammar
-  # Hand-create an Io-based LL(*) parser for that grammar
+  # Hand-create an Io-based LL(`*`) parser for that grammar
     * Should produce simple tree of nodes
     * Strive for parity (or better) than what Treetop produces, in terms of which parent nodes contain others
-  # Hand-create an Io-based LL(*) parser for the official PEG (not IoPEG) grammar
+  # Hand-create an Io-based LL(`*`) parser for the official PEG (not IoPEG) grammar
     * Also produces a tree of nodes, but where nodes are labelled with semantics specific to PEG grammar, e.g. "Identifier" and "Expression" and "Star" and "Plus" and "Group"
   # Hand-create an Io program that turns a tree with PEG semantics into a program like 3 or 4 above.
   # Copy the official PEG grammar from the PDF into ascii form.

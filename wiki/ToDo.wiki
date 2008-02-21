@@ -4,8 +4,6 @@
 http://phrogz.net/tmp/IoPEG_PathToProfit.png
 
 == Checklist =
-0a. Learn Io
-0b. Find/create an Io TDD framework - [http://www.iolanguage.com/scm/git/checkout/Io/docs/IoCoreReference.html#UnitTest done]
   # Design a PEG grammar describing a simple subject
   # Create one or more examples that use that grammar
   # Hand-create an Io-based LL(*) parser for that grammar

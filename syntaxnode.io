@@ -9,23 +9,45 @@ IoPEG Parser SyntaxNode := Object clone do(
     node close := close
     node
   )
-  addChild := method( kid,
-    if(kid==true,
-      call message arguments first println
+  # Passing a Range will update the node and its ancestors
+  # to cover the range of offsets, without adding a child node.
+  addChild := method( childNodeOrRange,
+    if( childNodeOrRange not, return childNodeOrRange )
+    if( childNodeOrRange isKindOf(Range),
+      updateOffsetsFromRange( childNodeOrRange )
+    ,
+      children push( childNodeOrRange )
+      childNodeOrRange parent := self      
+      if( childNodeOrRange = childNodeOrRange asRange,
+        updateOffsetsFromRange( childNodeOrRange )
+      )
     )
-    if( kid, children push( kid ) )
-    kid parent := self
-    kid
+    self
   )
-  text  := method( source slice( start, close ) )
-  size  := method( close - start )
+  
+  updateOffsetsFromRange := method( range,    
+    if( oldStart := self ?start,
+      if( range first < start, start = range first )
+    ,
+      self start := range first
+    )
+    if( oldClose := self ?close,
+      if( range last > close, close = range last )
+    ,
+      self close := range last
+    )
+    if( parent and ((start != oldStart) or (close != oldClose)),
+      parent updateOffsetsFromRange( range )
+    )
+    self    
+  )
+  
+  text    := method( source ?slice( start, close ) )
   asRange := method( start to(close) )
-  # Explicitly overridden by values on leaf nodes
-  source := method( ?parent ?source )
-  start := method( children map( start ) min )
-  close := method( children map( close ) max )
+  source  := method( ?parent ?source || ss )
     
   # Merge any nodes with a single child with the parent node
+  # FIXME: this causes some infinite call stack or something
   compact := method(
     "Compacting '#{self}'" interpolate println
     if( children size == 1,
@@ -53,5 +75,7 @@ IoPEG Parser SyntaxNode := Object clone do(
   showTree := method( asTree println )
   asString := method(
     id := ?name || "#{self type}_0x#{uniqueId asHex}" interpolate
-    "<#{id} '#{text asMutable escape}' #{children size} children>" interpolate )
+    "<#{id} #{?start}..#{?close} '#{text ?asMutable ?escape}' #{children size} children>" interpolate )
 )
+
+Range asRange := method( self )

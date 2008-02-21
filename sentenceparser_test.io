@@ -13,8 +13,6 @@ SentenceTester := UnitTest clone do(
   )
   
   xtest2_tree := method(
-    tree := SentenceParser parse( "Hello world!" )
-    assertEquals( tree text, "Hello world!" )
   )
   
   assertParses := method( str,

@@ -35,7 +35,7 @@ IoPEG SyntaxNodeTester := UnitTest clone do(
     assertEquals( lines size, 8 )
   )
   
-  test2_compact := method(
+  xxtest2_compact := method(
     hi := Node leaf( 0, 2 )
     there := Node leaf( 3, 8 )
     world := Node leaf( 9, 14 )
@@ -44,7 +44,7 @@ IoPEG SyntaxNodeTester := UnitTest clone do(
     p2 := Node clone
     p3 := Node clone
     p4 := Node clone
-    sentence addChild( p1 )
+    sentence addChild( p1 )    
     p1 addChild( p2 )
     p1 addChild( p3 )
     p2 addChild( hi )

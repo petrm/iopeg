@@ -7,22 +7,22 @@ IoPEG Parser := Object clone do(
   
   parse := method( sourceString,
     self offset := 0
-    self failAt := -1
-    self failString := "@@@"
-    self failStack  := "WTF"
+    self failOffset := -1
+    self failMessages  := list
     self partialTree := nil
     self sourceString := sourceString
     if( DEBUG_ON, DEBUG methodStart )
     
+    Object ss := sourceString
     root := parseRootProduction
     root source := sourceString
-
-    # TODO: track parse failures as they occur; report here.
+    
     if( root == nil,
-      msg := "Failed to parse #{call message argAt(0)}\n" asMutable
-      msg += "Stopped parsing at: '#{failString slice(0, 40) asMutable escape}'"
-      msg += "Current call stack:\n#{failStack}\n"
-      msg += "Parse tree so far:\n#{rootroot asTree}"
+      truncateChars := 40
+      offset = failOffset
+      msg := "Failed to parse '#{call message argAt(0)}' @ char ##{offset}\n" interpolate
+      msg = msg .. "stopped parsing at: '#{currentString slice( 0, truncateChars ) asMutable escape}'\n" interpolate
+      msg = msg .. failMessages reverse join( "\n" )
       ParseFailure raise( msg )
     )
 
@@ -33,12 +33,12 @@ IoPEG Parser := Object clone do(
     root
   )
   
-  failedOn := method( expr,
-    if( offset >= failAt,
-      failAt = offset
-      failString = currentString
-      failStack = call sender call callStack reverse map( message ) join( "\n" )
-    )
+  failedAt := method( offset, message,
+    if( offset < failOffset, return )
+    if ( offset > failOffset, failMessages empty )
+    failOffset = offset
+    failMessages push( message )
+    nil
   )
   
   # Sequentially consume each argument expression,
@@ -48,18 +48,13 @@ IoPEG Parser := Object clone do(
     if( DEBUG_ON, DEBUG methodStart )
     initialOffset := offset
     node := SyntaxNode clone
-    if( self hasSlot("rootroot") not, self rootroot := node )
     call message arguments foreach( expression,
       result := expression doInContext( call sender )
       #if( DEBUG_ON, "..[seq] #{expression} yielded #{result}" interpolate println )
       if( result,
-        if ( result != true,
-          # true is used to indicate an expression that succeeded but consumed no text;
-          # produced by optional(), star(), ensure() and forbid()
-          node addChild( result )
-        )
+        node addChild( result )
       ,
-        failedOn( expression )
+        failedAt( offset, "Could not match '#{expression}' in #{call message}" interpolate )
         offset = initialOffset
         if( DEBUG_ON, DEBUG returns(nil) )
         return nil
@@ -86,81 +81,95 @@ IoPEG Parser := Object clone do(
         offset = initialOffset
       )
     )
-    failedOn( call message )
+    failedAt( offset, "Could not match any of: #{call message arguments map( a, \"'\" .. a asString .. \"'\") join(\", \")}" interpolate )
     if( DEBUG_ON, DEBUG returns(nil) )
     nil
   )
 
-  # Returns true if the expression could not be matched,
-  # or a node of the match if it could
-  optional := method(
+  # Returns a node with child nodes for each match found,
+  # a non-zero range if all matches returned ranges,
+  # or nil if no matches could be found.
+  plus := method(
     if( DEBUG_ON, DEBUG methodStart )
-    result := call evalArgAt(0)
-    result = if( result, result, true )
-    if( DEBUG_ON, DEBUG returns(result) )
-    result
-  )  
-
-  # Returns true if the expression could not be matched,
-  # or a node with child nodes for each match if it could
-  star := method(
-    if( DEBUG_ON, DEBUG methodStart )
+    anySuccess := false
     node := SyntaxNode clone
     while( result := call evalArgAt(0),
+      # includes range-returning successes
+      # which may not result in an actual child addition
+      anySuccess = true
       node addChild( result )
     )
-    result := if( node children isEmpty, true, node )
+    result := if( anySuccess,
+      if ( node children isEmpty,
+        node asRange
+      ,
+        node
+      )
+    , 
+      failedAt( offset, "Could not find one or more #{call message argAt(0)}" interpolate )
+      nil
+    )
+    if( DEBUG_ON, DEBUG returns(result) )
+    result
+  )
+
+  # Returns an (empty) range if the expression could not be matched,
+  # a non-zero range if all matches also returned a range,
+  # or a node with child nodes for each match that succeeded
+  star := method(
+    if( DEBUG_ON, DEBUG methodStart )
+    anySuccess := false
+    node := SyntaxNode clone
+    while( result := call evalArgAt(0),
+      anySuccess = true
+      node addChild( result )
+    )
+    result := if( anySuccess,
+      if ( node children isEmpty,
+        node asRange
+      ,
+        node
+      )
+    ,
+      offset to(offset)
+    )
     if( DEBUG_ON, DEBUG returns(result) )
     result
   )
   
-  # Returns a node with child nodes for each match found,
-  # or nil if no matches could be found.
-  plus := method(
+  # Returns an (empty) range if the expression could not be matched,
+  # or the range or node of the match if it could
+  optional := method(
     if( DEBUG_ON, DEBUG methodStart )
-    node := SyntaxNode clone
-    while( result := call evalArgAt(0),
-      node addChild( result )
-    )
-    result := if( node children isEmpty,
-      failedOn( call message )
-      nil
-    , 
-      node
-    )
+    result := call evalArgAt(0) || ( offset to(offset) )
     if( DEBUG_ON, DEBUG returns(result) )
     result
-  )
+  )  
 
-  # Positive lookahead. Returns true if the expression succeeded, nil otherwise
+  # Positive lookahead. Returns an empty range if the expression succeeded, nil otherwise.
   ensure := method(
     if( DEBUG_ON, DEBUG methodStart )
     initialOffset := offset
-    result := call evalArgAt(0)
-    result = if( result,
-      true
-    ,
-      failedOn( call message )
-      nil
-    )
-    if( DEBUG_ON, DEBUG returns(result) )
+    result := call evalArgAt(0) and (initialOffset to(initialOffset))
     offset = initialOffset
+    if( result not, failedAt( offset, "Could not ensure '#{call message argAt(0)}'" interpolate ) )
+    if( DEBUG_ON, DEBUG returns(result) )
     result
   )
 
-  # Negative lookahead. Returns true if the expression fails, nil otherwise
+  # Negative lookahead. Returns an empty range if the expression fails, nil otherwise.
   forbid := method(
     if( DEBUG_ON, DEBUG methodStart )
     initialOffset := offset
     result := call evalArgAt(0)
+    offset = initialOffset
     result = if( result,
-      failedOn( call message )
+      failedAt( offset, "Found forbidden '#{call message argAt(0)}'" interpolate )
       nil
     ,
-      true
+      initialOffset to(initialOffset)
     )
     if( DEBUG_ON, DEBUG returns(result) )
-    offset = initialOffset
     result
   )
 
@@ -172,7 +181,7 @@ IoPEG Parser := Object clone do(
       result := SyntaxNode leaf( offset, offset + match size )
       offset = offset + match size
     ,
-      failedOn( call message )
+      failedAt( offset, "Could not match regex '#{regexString asMutable escape}'" interpolate )
       result := nil
     )
     if( DEBUG_ON, DEBUG returns2(result) )
@@ -185,7 +194,7 @@ IoPEG Parser := Object clone do(
       result := SyntaxNode leaf( offset, offset + literal size )
       offset = offset + literal size
     ,
-      failedOn( call message )
+      failedAt( offset, "Could not match string '#{literal asMutable escape}'" interpolate )
       result := nil
     )
     if( DEBUG_ON, DEBUG returns2(result) )
@@ -198,7 +207,7 @@ IoPEG Parser := Object clone do(
       result := SyntaxNode leaf( offset, offset + 1 )
       offset = offset + 1
     ,
-      failedOn( call message )
+      failedAt( offset, "Could not match . (end of input hit)" )
       result := nil
     )
     if( DEBUG_ON, DEBUG returns(result) )

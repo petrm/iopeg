@@ -3,12 +3,27 @@
 
 http://phrogz.net/tmp/IoPEG_PathToProfit.png
 
-== Checklist ==
-  # Learn Io
-  # Find/create an Io TDD framework - [http://www.iolanguage.com/scm/git/checkout/Io/docs/IoCoreReference.html#UnitTest done]
-  # Create a basic parser
-  # Bootstrap an IoPEG parser that generates Io code for parsing IoPEG grammars.
-  # Write a grammar for Io.
+== Checklist =
+0a. Learn Io
+0b. Find/create an Io TDD framework - [http://www.iolanguage.com/scm/git/checkout/Io/docs/IoCoreReference.html#UnitTest done]
+  # Design a PEG grammar describing a simple subject
+  # Create one or more examples that use that grammar
+  # Hand-create an Io-based LL(*) parser for that grammar
+    * Should produce simple tree of nodes
+    * Strive for parity (or better) than what Treetop produces, in terms of which parent nodes contain others
+  # Hand-create an Io-based LL(*) parser for the official PEG (not IoPEG) grammar
+    * Also produces a tree of nodes, but where nodes are labelled with semantics specific to PEG grammar, e.g. "Identifier" and "Expression" and "Star" and "Plus" and "Group"
+  # Hand-create an Io program that turns a tree with PEG semantics into a program like 3 or 4 above.
+  # Copy the official PEG grammar from the PDF into ascii form.
+    * Feeding this into #4, and then feeding that output through #5, should produce #4.
+      * Let the madness begin!
+  # Create a derivation of the official PEG grammar that allows extra markup, like node labels and semantic blocks. This is described using official PEG grammar.
+  # Create a derivation of that which uses the enhanced IoPEG grammar to describe a parser.
+  # Hand-create a parser (by modifying #4) that reads in enhanced IoPEG grammars, and produces programs from them
+    * Feeding #8 into #9 should produce #9.
+    * Now we're bootstrapped; all additional changes to the IoPEG grammar or the parser code should be effected by modifying #8 only, and then feeding it through #9 to produce the new version of #9.
+  # Modify the PEG grammar in #1 to use IoPEG grammar to add semantics to the problem domain.
+    * Feeding this through #9 should produce a program like #3, but that provides useful information on the output tree.
 
 === Features to implement ===
   * Syntactically validate a string without the overhead of creating a tree of nodes.

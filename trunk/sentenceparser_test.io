@@ -6,9 +6,9 @@ SentenceTester := UnitTest clone do(
     assertParses( "Hello!" )
     assertParses( "Hello there you sexy world!" )
     assertParses( "Hello there, world!" )
-    assertParseFailure( "" )
-    assertParseFailure( "!" )
-    assertParseFailure( "hello world!" )
+    assertParseFailure( "" )                    # no content
+    assertParseFailure( "!" )                   # no first word
+    assertParseFailure( "hello world!" )        # first word not capital
     assertParseFailure( "Hello World! BORK" )   # not ending with punc, bad.
   )
   
@@ -25,23 +25,14 @@ SentenceTester := UnitTest clone do(
 )
 SentenceTester run
 
-SentenceParser parse( "Hello there, fine World!" ) showTree
-#=> <SyntaxNode_0x32e2f0 'Hello there, fine World!' 3 children>
-#=>   <SyntaxNode_0x2f0040 'Hello' 2 children>
-#=>     <SyntaxNode_0x391390 'H' 0 children>
-#=>     <SyntaxNode_0x2a6bf0 'ello' 0 children>
-#=>   <SyntaxNode_0x2bbdf0 ' there, fine World' 3 children>
-#=>     <SyntaxNode_0x251d10 ' there,' 3 children>
-#=>       <SyntaxNode_0x38df70 ' ' 0 children>
-#=>       <SyntaxNode_0x3294c0 'there' 0 children>
-#=>       <SyntaxNode_0x2f9ad0 ',' 0 children>
-#=>     <SyntaxNode_0x20baf0 ' fine' 2 children>
-#=>       <SyntaxNode_0x2c5b20 ' ' 0 children>
-#=>       <SyntaxNode_0x25e570 'fine' 0 children>
-#=>     <SyntaxNode_0x25f250 ' World' 2 children>
-#=>       <SyntaxNode_0x2a6720 ' ' 0 children>
-#=>       <SyntaxNode_0x251210 'World' 0 children>
-#=>   <SyntaxNode_0x2c8d70 '!' 0 children>
+# SentenceParser parse( "Hello there, fine World!" ) showTree
+#=> <Sentence keep 0..24 "Hello there, fine World!" 6 children>
+#=>   <Word keep 0..5 "Hello" 0 children>
+#=>   <Word keep 6..11 "there" 0 children>
+#=>   <InlinePunctuation keep 11..12 "," 0 children>
+#=>   <Word keep 13..17 "fine" 0 children>
+#=>   <Word keep 18..23 "World" 0 children>
+#=>   <TerminalPunctuation keep 23..24 "!" 0 children>
 
 # Compared to Treetop:
 #=> SyntaxNode+Sentence2 offset=0, "...o there, fine World!" (capitalized_word,terminal_punctuation):
@@ -78,3 +69,4 @@ SentenceParser parse( "Hello there, fine World!" ) showTree
 #=>         SyntaxNode offset=21, "l"
 #=>         SyntaxNode offset=22, "d"
 #=>   SyntaxNode offset=23, "!"
+

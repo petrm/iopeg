@@ -15,7 +15,7 @@ SentenceParser := IoPEG Parser clone do(
   parseSentence := method(
     seq(
       parseCapitalizedWord,
-      star( parseSentenceAlternation1 ),
+      star( parseSentenceAlternation1 ) hoist,
       parseTerminalPunctuation
     ) do( name:="Sentence" )
   )
@@ -24,11 +24,11 @@ SentenceParser := IoPEG Parser clone do(
     choice(
       seq( parseSpace, parseWord, parseInlinePunctuation ),
       seq( parseSpace, parseWord )
-    )
+    ) hoist
   )
   
   parseCapitalizedWord := method(
-    seq( regex("[A-Z]") ?asRange, optional( parseWord ) ?asRange ) do( name:="Word" )
+    seq( regex("[A-Z]"), optional( parseWord ) ) collapse do( name:="Word" )
   )
 
   parseWord := method(
@@ -36,7 +36,7 @@ SentenceParser := IoPEG Parser clone do(
   )
   
   parseSpace := method(
-    str( " " ) ?asRange
+    str( " " ) ignore
   )
   
   parseTerminalPunctuation := method(

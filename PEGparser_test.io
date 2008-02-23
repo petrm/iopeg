@@ -2,7 +2,8 @@ PEGParser
 
 TestPEGParser := UnitTest clone do(  
   test1_parsing := method(
-    assertParses( File with( "PEG.peg" ) contents )
+  assertParses( File with( "PEG.peg" ) contents )
+  assertParses( File with( "eng.peg" ) contents )
   )
   
   assertParses := method( str,
@@ -13,9 +14,9 @@ TestPEGParser := UnitTest clone do(
     assertRaisesException( PEGParser parse( str ) )
   )
 )
-# TestPEGParser run
+TestPEGParser run
 
-PEGParser parse( File with( "PEG.peg" ) contents ) showTree
+#PEGParser parse( File with( "PEG.peg" ) contents ) showTree
 /*
 <SyntaxNode_0x634590 0..1213 '# Hierarchical syntax\nGrammar    <- Spacing Definition+ EndOfFile\nDefinition <- Identifier LEFTARROW Expression\nExpression <- Sequence (SLASH Sequence)*\nSequence   <- Prefix*\nPrefix     <- (AND / NOT)? Suffix\nSuffix     <- Primary (QUESTION / STAR / PLUS)?\nPrimary    <- Identifier !LEFTARROW\n              / OPEN Expression CLOSE\n              / Literal / Class / DOT\n\n# Lexical syntax\nIdentifier <- IdentStart IdentCont* Spacing\nIdentStart <- [a-zA-Z_]\nIdentCont  <- IdentStart / [0-9]\nLiteral    <- ['] (!['] Char)* ['] Spacing\n              / [\"] (![\"] Char)* [\"] Spacing\n\nClass      <- '[' (!']' Range)* ']' Spacing\nRange      <- Char '-' Char / Char\nChar       <- '\\\\' [nrt'\"\\[\\]\\\\]\n              / '\\\\' [0-2] [0-7] [0-7]\n              / '\\\\' [0-7] [0-7]?\n              / !'\\\\' .\nLEFTARROW  <- '<-' Spacing\nSLASH      <- '/' Spacing\nAND        <- '&' Spacing\nNOT        <- '!' Spacing\nQUESTION   <- '?' Spacing\nSTAR       <- '*' Spacing\nPLUS       <- '+' Spacing\nOPEN       <- '(' Spacing\nCLOSE      <- ')' Spacing\nDOT        <- '.' Spacing\nSpacing    <- (Space / Comment)*\nComment    <- '#' (!EndOfLine .)* EndOfLine\nSpace      <- ' ' / '\\t' / EndOfLine\nEndOfLine  <- '\\r\\n' / '\\n' / '\\r'\nEndOfFile  <- !.\n' 2 children>
   <SyntaxNode_0x65e240 0..22 '# Hierarchical syntax\n' 1 children>

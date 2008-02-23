@@ -39,17 +39,17 @@ if( true,
   DEBUG := Object clone do(
     methodStart := method(
       sender := call sender
-      "  " repeated( Scheduler currentCoroutine callStack size - 1 ) print
+      "  " repeated( Scheduler currentCoroutine callStack size - 4 ) print
       "#{sender call message} with '#{sender currentString asMutable escape}'" interpolate println
     )
     returns := method(
       val := call evalArgAt( 0 )
-      "  " repeated( Scheduler currentCoroutine callStack size - 1 ) print
+      "  " repeated( Scheduler currentCoroutine callStack size - 4 ) print
       "[#{call sender call message name}] returns: #{val}" interpolate println
     )
     returns2 := method(
       val := call evalArgAt( 0 )
-      "  " repeated( Scheduler currentCoroutine callStack size - 1 ) print
+      "  " repeated( Scheduler currentCoroutine callStack size - 4 ) print
       "#{call sender call message} returns: #{val}" interpolate println
     )
   )

@@ -2,7 +2,8 @@ IoPEGParser
 
 TestPEGParser := UnitTest clone do(  
   test1_parsing := method(
-    assertParses( File with( "PEG.peg" ) contents )
+    assertParses( File with( "IoPEG.peg" ) contents )
+    assertParses( File with( "eng.peg" ) contents )
   )
   
   assertParses := method( str,
@@ -14,6 +15,5 @@ TestPEGParser := UnitTest clone do(
   )
 )
 TestPEGParser run
-
-#IoPEGParser parse( File with( "IoPEG.peg" ) contents ) showTree
-
+# IoPEGParser parse( File with( "eng.peg" ) contents ) showTree
+# IoPEGParser parse( File with( "IoPEG.peg" ) contents ) showTree

@@ -138,5 +138,5 @@ three
 
 ----
 
-**Monkeypatching += for Sequences**
-`Sequence += := method(str, if(isMutable, appendSeq(str), asMutable +=(str)))`
+*Monkeypatching += for Sequences*
+{{{Sequence += := method(str, if(isMutable, appendSeq(str), asMutable +=(str)))}}}

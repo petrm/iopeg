@@ -1,9 +1,11 @@
 IoPEG Parser SyntaxNode := Object clone do(
+  type := "SyntaxNode"
   HoistError := Exception clone
   init := method(
     self parent     := nil
     self children   := list()
-    self resultStatus := "keep"
+    self attributes := Map clone
+    self status := "keep"
   )
   leaf := method( start, close,
     node := self clone
@@ -11,6 +13,12 @@ IoPEG Parser SyntaxNode := Object clone do(
     node close := close
     node
   )
+  at    := method( attr, attributes at( attr ) )
+  atPut := method( attr, value, attributes atPut( attr, value ) )
+  squareBrackets := getSlot( "at" )
+
+  childWithType    := method( desired, children detect( child, child type == desired ) )
+  childrenWithType := method( desired, children select( child, child type == desired ) )
 
   addChild := method( childNode,
     if( childNode shouldHoist,
@@ -47,35 +55,22 @@ IoPEG Parser SyntaxNode := Object clone do(
     )
     self
   )
-  keep    := method( resultStatus = "keep"; self )
-  skip    := method( if ( resultStatus != "fail", resultStatus = "extend" ); self )
-  ignore  := method( if ( resultStatus != "fail", resultStatus = "ignore" ); self )
-  fail    := method( resultStatus = "fail"; self )
+  keep    := method( status = "keep"; self )
+  skip    := method( if ( status != "fail", status = "extend" ); self )
+  ignore  := method( if ( status != "fail", status = "ignore" ); self )
+  fail    := method( status = "fail"; self )
 
-  isValid            := method( resultStatus != "fail" )
-  shouldKeep         := method( resultStatus == "keep" )
-  shouldExtendParent := method( resultStatus == "keep" || resultStatus == "extend" )
-  shouldHoist        := method( resultStatus == "hoist" )
-  isHosed            := method( resultStatus == "fail" )
+  isValid            := method( status != "fail" )
+  shouldKeep         := method( status == "keep" )
+  shouldExtendParent := method( status == "keep" || status == "extend" )
+  shouldHoist        := method( status == "hoist" )
+  isHosed            := method( status == "fail" )
 
   text    := method( ?start and ?close and source ?slice( start, close ) )
   source  := method( ?parent ?source || Object ss )
 
-  # Merge any nodes with a single child with the parent node
-  # FIXME: this causes some infinite call stack or something
-  # compact := method(
-  #   "Compacting '#{self}'" interpolate println
-  #   if( children size == 1,
-  #     myParent := parent
-  #     self mergeWith( children first )
-  #     parent := myParent
-  #     children foreach( parent := self )
-  #   )
-  #   children foreach( compact )
-  #   self
-  # )
-  
   # Remove this node, replacing it with its child/children
+  # Assumes that the node has not already been added to its parent
   hoist := method(
     if( children size < 1,
       ignore
@@ -86,31 +81,12 @@ IoPEG Parser SyntaxNode := Object clone do(
         self become( first )
       ,
         # Mark for adding
-        resultStatus = "hoist"
+        status = "hoist"
         self        
       )
     )
     self
   )
-  #   if( children size < 1,
-  #     ignore
-  #   ,
-  #     if( children size == 1,
-  #       first := children first
-  #       if( parent, first parent = parent )
-  #       self become( first )
-  #     ,
-  #       if( parent,
-  #         parent replaceChild( self, self children )
-  #         parent
-  #       ,
-  #         # Mark for adding
-  #         #resultStatus = "hoist"
-  #         self
-  #       )
-  #     )
-  #   )
-  # )
   
   replaceChild := method( Exception raise( "SyntaxNode raiseChild not implemented." ) )
 
@@ -126,8 +102,8 @@ IoPEG Parser SyntaxNode := Object clone do(
 
   showTree := method( asTree println )
   asString := method(
-    id := ?name || "#{self type}_0x#{uniqueId asHex}" interpolate
-    "<#{id} #{?resultStatus} #{?start}..#{?close} \"#{text ?asMutable ?escape}\" #{children size} children>" interpolate
+    "<#{self type}#{status != \"keep\" and (\" \"..status) || \"\"}#{attributes map(a,v, \" \" .. a .. \"=\\\"\".. v .. \"\\\"\") join} #{?start}..#{?close} \"#{text ?asMutable ?escape}\">" interpolate
   )
+  
   asRange := method( start to( close ) )
 )

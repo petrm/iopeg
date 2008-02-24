@@ -135,3 +135,8 @@ two
 three
 ==> list("one", "two", "three")
 }}}
+
+----
+
+**Monkeypatching += for Sequences**
+`Sequence += := method(str, if(isMutable, appendSeq(str), asMutable +=(str)))`

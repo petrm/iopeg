@@ -139,4 +139,6 @@ three
 ----
 
 *Monkeypatching += for Sequences*
-{{{Sequence += := method(str, if(isMutable, appendSeq(str), asMutable +=(str)))}}}
+{{{
+Sequence += := method(str, if(isMutable, appendSeq(str), asMutable +=(str)))
+}}}

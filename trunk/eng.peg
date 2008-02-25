@@ -1,5 +1,5 @@
 sentence              <- capitalized_word ( space word inline_punctuation / space word )* terminal_punctuation
-capitalized_word      <- [A-Z] Word?
+capitalized_word      <- [A-Z] word?
 word                  <- [A-Za-z]+
 space                 <- ' '
 terminal_punctuation  <- '.' / '!' / '?'

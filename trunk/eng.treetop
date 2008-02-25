@@ -1,20 +1,20 @@
 grammar Eng
-  rule sentence
-    capitalized_word ( space word inline_punctuation / space word )* terminal_punctuation
-  end
-  rule capitalized_word
-    [A-Z] word?
-  end
-  rule word
-    [A-Za-z]+
-  end
-  rule space
-    ' '
-  end
-  rule terminal_punctuation
-    '.' / '!' / '?'
-  end
-  rule inline_punctuation
-    [,;:]
-  end
+	rule sentence
+		capitalized_word ( space word inline_punctuation / space word )* terminal_punctuation
+	end
+	rule capitalized_word
+		[A-Z] word?
+	end
+	rule word
+		[A-Za-z]+
+	end
+	rule space
+		' '
+	end
+	rule terminal_punctuation
+		'.' / '!' / '?'
+	end
+	rule inline_punctuation
+		[,;:]
+	end
 end

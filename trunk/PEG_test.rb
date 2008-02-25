@@ -4,9 +4,9 @@ require 'peg'
 
 @peg = PEGParser.new
 if @peg.parse( IO.read("PEG.peg") )
-  puts @peg.failure_reason
+	puts @peg.failure_reason
 else
-  p @peg
+	p @peg
 end
 
 __END__

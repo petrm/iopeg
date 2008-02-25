@@ -1,27 +1,27 @@
 SentenceParser
 
 SentenceTester := UnitTest clone do(  
-  test1_parsing := method(
-    assertParses( "Hello World!" )
-    assertParses( "Hello!" )
-    assertParses( "Hello there you sexy world!" )
-    assertParses( "Hello there, world!" )
-    assertParseFailure( "" )                    # no content
-    assertParseFailure( "!" )                   # no first word
-    assertParseFailure( "hello world!" )        # first word not capital
-    assertParseFailure( "Hello World! BORK" )   # not ending with punc, bad.
-  )
-  
-  xtest2_tree := method(
-  )
-  
-  assertParses := method( str,
-    assertNotNil( SentenceParser parse( str ) )
-  )
-  
-  assertParseFailure := method( str,
-    assertRaisesException( SentenceParser parse( str ) )
-  )
+	test1_parsing := method(
+		assertParses( "Hello World!" )
+		assertParses( "Hello!" )
+		assertParses( "Hello there you sexy world!" )
+		assertParses( "Hello there, world!" )
+		assertParseFailure( "" )                    # no content
+		assertParseFailure( "!" )                   # no first word
+		assertParseFailure( "hello world!" )        # first word not capital
+		assertParseFailure( "Hello World! BORK" )   # not ending with punc, bad.
+	)
+	
+	xtest2_tree := method(
+	)
+	
+	assertParses := method( str,
+		assertNotNil( SentenceParser parse( str ) )
+	)
+	
+	assertParseFailure := method( str,
+		assertRaisesException( SentenceParser parse( str ) )
+	)
 )
 SentenceTester run
 

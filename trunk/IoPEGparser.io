@@ -146,7 +146,7 @@ IoPEGParser := IoPEG Parser clone do(
 		) collapse do (
 			type := "LITERAL"
 			asCode := method(
-				"str(\"#{text asMutable escape}\")" interpolate
+				"str(\"#{text asMutable}\")" interpolate
 			)
 		)
 	)
@@ -162,7 +162,7 @@ IoPEGParser := IoPEG Parser clone do(
 		) collapse do (
 			type := "CLASS"
 			asCode := method(
-				"regex(\"[#{text}]\")" interpolate
+				"regex(\"[#{text asMutable escape}]\")" interpolate
 			)
 		)
 	)
@@ -189,7 +189,10 @@ IoPEGParser := IoPEG Parser clone do(
 	pPLUS      := method( seq( str("+"), pSpacing ) collapse )
 	pOPEN      := method( seq( str("("), pSpacing ) ignore )
 	pCLOSE     := method( seq( str(")"), pSpacing ) ignore )
-	pDOT       := method( seq( str("."), pSpacing ) collapse do( type := "ANY" ) )
+	pDOT       := method( seq( str("."), pSpacing ) collapse do(
+		type := "ANY"
+		asCode := "any"
+	) )
 	pSpacing := method(
 		star( choice( pSpace, pComment ) ) ignore
 	)

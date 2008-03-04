@@ -5,6 +5,10 @@ IoPEG := Object clone
 IoPEG Parser := Object clone do(
 	ParseFailure := Exception clone
 	
+	parseFile := method( fileName,
+		self parse( File with( fileName ) contents )
+	)
+	
 	parse := method( sourceString,
 		Object ss := sourceString
 		self offset := 0

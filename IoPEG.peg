@@ -1,19 +1,27 @@
 # Hierarchical syntax
-Grammar    <- Spacing Definition+ EndOfFile
-Definition <- Identifier LEFTARROW Expression
+IoPEG      <- Spacing Definition+ EndOfFile
+Definition <- Identifier Spacing LEFTARROW Expression
 Expression <- Primary+ (SLASH Primary+)*
-Primary    <- (AND / NOT)?
+Primary    <- Prefix?
               (
-                Identifier !LEFTARROW
+                Identifier Spacing !LEFTARROW
                 / OPEN Expression CLOSE
-                / Literal / Class / DOT
+                / Regex / Literal / Class / DOT
               )
-              (QUESTION / STAR / PLUS)?
+              Suffix?
+              Semantics?
+Prefix     <- AND / NOT / Label
+Label      <- Identifier ':'
+Suffix     <- QUESTION / STAR / PLUS
+Semantics  <- Mixin / RawCode
+Mixin      <- '<' (Identifier Spacing)+ '>' Spacing
+RawCode    <- OPENCURL IoCode CLOSECURL
 
 # Lexical syntax
-Identifier <- IdentStart IdentCont* Spacing
+Identifier <- IdentStart IdentCont*
 IdentStart <- [a-zA-Z_]
 IdentCont  <- IdentStart / [0-9]
+Regex      <- '`' ( '\\`' / !'`' . )+ '`' Spacing
 Literal    <- ['] (!['] Char)* ['] Spacing
               / ["] (!["] Char)* ["] Spacing
 
@@ -32,9 +40,15 @@ STAR       <- '*' Spacing
 PLUS       <- '+' Spacing
 OPEN       <- '(' Spacing
 CLOSE      <- ')' Spacing
+OPENCURL   <- '{' Spacing
+CLOSECURL  <- '}' Spacing
 DOT        <- '.' Spacing
 Spacing    <- (Space / Comment)*
 Comment    <- '#' (!EndOfLine .)* EndOfLine
 Space      <- ' ' / '\t' / EndOfLine
 EndOfLine  <- '\r\n' / '\n' / '\r'
 EndOfFile  <- !.
+
+# Io code
+# TODO: acual Io PEG here
+IoCode     <- (!'}' .)+

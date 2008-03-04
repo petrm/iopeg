@@ -16,7 +16,7 @@ TestPEGParser := UnitTest clone do(
 )
 TestPEGParser run
 
-# IoPEGParser parse( File with( "eng.peg" ) contents ) showTree
+IoPEGParser parse( File with( "IoPEG.peg" ) contents ) showTree
 #=> <Grammar 0..282 "sentence              <- capitalized_word ( space word inline_punctuation / space word )* terminal_punctuation\ncapitalized_word      <- [A-Z] word?\nword                  <- [A-Za-z]+\nspace                 <- ' '\nterminal_punctuation  <- '.' / '!' / '?'\ninline_punctuation    <- [,;:">
 #=>   <Definition 0..110 "sentence              <- capitalized_word ( space word inline_punctuation / space word )* terminal_punctuation">
 #=>     <Identifier 0..8 "sentence">
